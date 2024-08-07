@@ -1,27 +1,20 @@
 .tile {
-    /* background-color: rgba(255, 255, 255, 0.9);
-    padding: 15px;
-    border-radius: 8px;
-    margin: 10px;
-    color: #282c34;
-    text-align: center;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    background-color: rgba(255, 255, 255, 0.9);
-    border-radius: 8px;
-    color: #282c34;
-    text-align: center;
-    padding: 2%;
-    flex: 1 1 calc(46% - 16px); /* Adjust for gap */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: rgb(242, 242, 242);
+  border-radius: 8px;
+  color: #282c34;
+  text-align: center;
+  padding: 2%;
+  flex: 1 1 calc(46% - 16px);
   box-sizing: border-box;
-  }
-  
-  .tile h3 {
-    margin: 0 0 10px;
-  }
-  
-  .tile p {
-    margin: 0;
-    font-size: 1.2em;
-  }
-  
+}
+
+.tile h3 {
+  margin: 0 0 10px;
+  text-align: start;
+}
+
+.tile p {
+  margin: 0;
+  font-size: 1.2em;
+}
