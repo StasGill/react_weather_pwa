@@ -1,79 +1,88 @@
-import React, { useState, useEffect } from "react";
-import { getWeather } from "./api/weatherApi";
+import React, { useState, useEffect, useCallback } from "react";
+import { useTranslation } from "react-i18next";
+import WeatherDisplay from "./components/WeatherDisplay";
 import "./App.css";
-import { getWeatherByCoords } from "./api/weatherApi";
 
-const App = () => {
+function App() {
+  const { t } = useTranslation();
   const [city, setCity] = useState("");
-  const [weather, setWeather] = useState(null);
+  const [weatherData, setWeatherData] = useState(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const fetchWeather = useCallback(
+    async (lat, lon) => {
+      const apiKey = "c87eed3b62ba3e0fb9ab356c0976b931"; // Replace with your API key
+      const url =
+        lat && lon
+          ? `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`
+          : `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
+
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+        setLoading(false);
+        if (data.cod === 200) {
+          setWeatherData(data);
+          setError("");
+        } else {
+          setError(data.message);
+          setWeatherData(null);
+        }
+      } catch (err) {
+        setLoading(false);
+        setError(t("failed_to_fetch"));
+        setWeatherData(null);
+      }
+    },
+    [city, t]
+  );
+
   useEffect(() => {
-    if ("geolocation" in navigator) {
+    if (navigator.geolocation) {
+      setLoading(true);
       navigator.geolocation.getCurrentPosition(
-        async (position) => {
+        (position) => {
           const { latitude, longitude } = position.coords;
-          fetchWeatherByCoords(latitude, longitude);
+          fetchWeather(latitude, longitude);
         },
-        (err) => {
-          console.error("Error getting location: ", err);
-          setError("Could not get your location.");
+        (error) => {
+          setLoading(false);
+          setError(t("location_error"));
         }
       );
+    } else {
+      setError(t("geolocation_not_supported"));
     }
-  }, []);
-
-  const fetchWeather = async () => {
-    setLoading(true);
-    setError("");
-    try {
-      const response = await getWeather(city);
-      setWeather(response.data);
-    } catch (error) {
-      console.error("Error fetching the weather data", error);
-      setError("Error fetching the weather data. Please try again.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const fetchWeatherByCoords = async (lat, lon) => {
-    setLoading(true);
-    setError("");
-    try {
-      const response = await getWeatherByCoords(lat, lon);
-      setWeather(response.data);
-    } catch (error) {
-      console.error("Error fetching the weather data", error);
-      setError("Error fetching the weather data. Please try again.");
-    } finally {
-      setLoading(false);
-    }
-  };
+  }, [fetchWeather, t]);
 
   return (
     <div className="App">
-      <h1>Weather App</h1>
-      <input
-        type="text"
-        value={city}
-        onChange={(e) => setCity(e.target.value)}
-        placeholder="Enter city"
-      />
-      <button onClick={fetchWeather}>Get Weather</button>
-
-      {loading && <p>Loading...</p>}
-      {error && <p>{error}</p>}
-      {weather && (
-        <div>
-          <h2>{weather.name}</h2>
-          <p>Temperature: {weather.main.temp}°C</p>
-          <p>Weather: {weather.weather[0].description}</p>
-        </div>
-      )}
+      <header className="App-header">
+        <h1>{weatherData ? weatherData?.name : t("welcome")}</h1>
+        <input
+          type="text"
+          value={city}
+          onChange={(e) => setCity(e.target.value)}
+          placeholder={t("enter_city")}
+          disabled={loading}
+        />
+        <button onClick={() => fetchWeather()} disabled={loading}>
+          {t("get_weather")}
+        </button>
+        {/* <button onClick={() => fetchWeather()} disabled={loading}>
+          {t("use_location")}
+        </button> */}
+        {loading && <p>{t("loading")}</p>}
+        {error && (
+          <p>
+            {t("error")}: {error}
+          </p>
+        )}
+        {weatherData && <WeatherDisplay data={weatherData} />}
+      </header>
     </div>
   );
-};
+}
 
 export default App;

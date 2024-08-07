@@ -1,6 +1,10 @@
 const CACHE_NAME = "weather-app-cache-v1";
 const urlsToCache = [
   "/",
+  "/manifest.json",
+  "/icons/icon.svg",
+  "/icons/icon-192x192.png",
+  "/icons/icon-512x512.png",
   "/index.html",
   "/static/js/bundle.js",
   "/static/js/main.chunk.js",

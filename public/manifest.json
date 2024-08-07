@@ -1,19 +1,24 @@
 {
-  "short_name": "TodoApp",
-  "name": "Todo Application",
+  "short_name": "SkySphere",
+  "name": "SkySphere Application",
   "icons": [
     {
-      "src": "favicon.ico",
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "sun_ico.ico",
       "sizes": "64x64 32x32 24x24 16x16",
       "type": "image/x-icon"
     },
     {
-      "src": "logo192.png",
+      "src": "sun2.png",
       "type": "image/png",
       "sizes": "192x192"
     },
     {
-      "src": "logo512.png",
+      "src": "sun.png",
       "type": "image/png",
       "sizes": "512x512"
     }
